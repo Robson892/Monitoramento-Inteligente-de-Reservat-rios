@@ -39,5 +39,5 @@ app.use(express.static('public'));
 
 // Inicie o servidor
 app.listen(port, () => {
-    console.log(`Servidor rodando em http://192.168.68.68:${port}`);
+    console.log(`Servidor rodando em http://localhost:${port}`);
 });
