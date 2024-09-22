@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Visualização - Condominio</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <h1>Painel de Visualização - Nível das Caixas D'Água </h1>
+
+    <!-- Gráficos para cada uma das 6 casas -->
+    <div class="canvas-container">
+        <h2>Casa 1 - Nível da Água: <span id="level-title1">0%</span></h2>
+        <canvas id="waterLevelChart1" width="400" height="200"></canvas>
+    </div>
+
+    <div class="canvas-container">
+        <h2>Casa 2 - Nível da Água: <span id="level-title2">0%</span></h2>
+        <canvas id="waterLevelChart2" width="400" height="200"></canvas>
+    </div>
+
+    <div class="canvas-container">
+        <h2>Casa 3 - Nível da Água: <span id="level-title3">0%</span></h2>
+        <canvas id="waterLevelChart3" width="400" height="200"></canvas>
+    </div>
+
+    <div class="canvas-container">
+        <h2>Casa 4 - Nível da Água: <span id="level-title4">0%</span></h2>
+        <canvas id="waterLevelChart4" width="400" height="200"></canvas>
+    </div>
+
+    <div class="canvas-container">
+        <h2>Casa 5 - Nível da Água: <span id="level-title5">0%</span></h2>
+        <canvas id="waterLevelChart5" width="400" height="200"></canvas>
+    </div>
+
+    <div class="canvas-container">
+        <h2>Casa 6 - Nível da Água: <span id="level-title6">0%</span></h2>
+        <canvas id="waterLevelChart6" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        // Função para configurar cada gráfico
+        function createWaterLevelChart(canvasId, titleId, casaId) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Nível da Água'],
+                    datasets: [{
+                        label: 'Nível (%)',
+                        data: [0],
+                        backgroundColor: ['rgba(75, 192, 192, 0.6)'],
+                        borderColor: ['rgba(75, 192, 192, 1)'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        datalabels: {
+                            display: true,
+                            color: 'white',
+                            align: 'center',
+                            formatter: function (value) {
+                                return value + '%';
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: 16,
+                                    family: 'Arial'
+                                },
+                                color: 'black'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Atualiza o gráfico com os dados do servidor
+            async function fetchWaterLevel() {
+                try {
+                    const response = await fetch('/levels');
+                    const data = await response.json();
+                    const level = data[casaId];
+
+                    chart.data.datasets[0].data[0] = level;
+                    chart.update();
+
+                    document.getElementById(titleId).textContent = level + '%';
+                } catch (error) {
+                    console.error('Erro ao buscar dados do nível da água:', error);
+                }
+            }
+
+            // Atualiza a cada 1 minuto
+            setInterval(fetchWaterLevel, 60000);
+            fetchWaterLevel();
+        }
+
+        // Criar gráficos para cada casa
+        createWaterLevelChart('waterLevelChart1', 'level-title1', 1);
+        createWaterLevelChart('waterLevelChart2', 'level-title2', 2);
+        createWaterLevelChart('waterLevelChart3', 'level-title3', 3);
+        createWaterLevelChart('waterLevelChart4', 'level-title4', 4);
+        createWaterLevelChart('waterLevelChart5', 'level-title5', 5);
+        createWaterLevelChart('waterLevelChart6', 'level-title6', 6);
+    </script>
+</body>
+</html>
