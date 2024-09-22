@@ -7,7 +7,7 @@
 
 const char* ssid = "Tricolornet Wifi";
 const char* password = "lanasabata2021";
-const String serverUrl = "http://192.168.68.68:3000/update"; // URL do servidor
+const String serverUrl = "http://localhost:3000/update"; // URL do servidor
 
 // Distâncias em cm
 const int ALTURA_SENSOR = 78;  // Altura total do sensor até o fundo
